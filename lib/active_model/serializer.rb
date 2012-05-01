@@ -56,12 +56,13 @@ module ActiveModel
 
       if root = @options[:root]
         if pages?
-          hash[:meta] = {
+          hash[:meta] ||= {}
+          hash[:meta].merge!({
             :pagination => {
               :current => @object.current_page,
               :total => @object.num_pages
             }
-          }
+          })
         end
 
         hash.merge!(root => array)
