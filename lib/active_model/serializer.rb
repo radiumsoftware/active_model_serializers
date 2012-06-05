@@ -537,10 +537,8 @@ module ActiveModel
 
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
-    def instrument(name, data = {})
+    def instrument(name, payload = {})
       event_name = "#{name}.#{self.class.to_s.demodulize.underscore}.serializer"
-      payload = data.merge :gauge => true
-
       ActiveSupport::Notifications.instrument event_name, payload do
         yield
       end
