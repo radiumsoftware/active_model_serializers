@@ -209,7 +209,7 @@ module ActiveModel
 
         def serialize_ids
           # Use pluck or select_columns if available
-          # return collection.ids if collection.respond_to?(:ids)
+          return collection.ids if collection.respond_to?(:ids)
 
           associated_object.map do |item|
             item.read_attribute_for_serialization(:id)
