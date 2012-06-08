@@ -1069,4 +1069,13 @@ class SerializerTest < ActiveModel::TestCase
       }
     }, actual)
   end
+
+  def test_instrument_is_disabled_by_default
+    refute ActiveModel::Serializer.instrument
+
+    test_serializer = Class.new(ActiveModel::Serializer) do
+    end
+
+    refute test_serializer.instrument
+  end
 end

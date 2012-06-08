@@ -275,6 +275,9 @@ module ActiveModel
     self._embed = :objects
     class_attribute :_root_embed
 
+    class_attribute :instrument
+    self.instrument = false
+
     class << self
       # Define attributes to be used in the serialization.
       def attributes(*attrs)
@@ -538,8 +541,12 @@ module ActiveModel
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
     def instrument(name, payload = {})
-      event_name = "#{name}.#{self.class.to_s.demodulize.underscore}.serializer"
-      ActiveSupport::Notifications.instrument event_name, payload do
+      if self.class.instrument?
+        event_name = "#{name}.serializer"
+        ActiveSupport::Notifications.instrument event_name, payload do
+          yield
+        end
+      else
         yield
       end
     end
