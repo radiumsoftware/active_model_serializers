@@ -898,7 +898,7 @@ class SerializerTest < ActiveModel::TestCase
 
     attachment_serializer = Class.new(ActiveModel::Serializer) do
       attributes :name, :url
-      has_one :attachable, :polymorphic => true
+      has_one :attachable, :polymorphic => true, :nested => true
     end
 
     email = email_class.new :subject => 'foo', :body => 'bar'
@@ -934,7 +934,7 @@ class SerializerTest < ActiveModel::TestCase
     attachment_serializer = Class.new(ActiveModel::Serializer) do
       embed :ids
       attributes :name, :url
-      has_one :attachable, :polymorphic => true
+      has_one :attachable, :polymorphic => true, :nested => true
     end
 
     email = email_class.new :id => 1
@@ -971,7 +971,7 @@ class SerializerTest < ActiveModel::TestCase
       root :attachment
       embed :ids, :include => true
       attributes :name, :url
-      has_one :attachable, :polymorphic => true
+      has_one :attachable, :polymorphic => true, :nested => true
     end
 
     email = email_class.new :id => 1, :subject => "Hello", :body => "World"
@@ -1004,7 +1004,7 @@ class SerializerTest < ActiveModel::TestCase
       embed :ids, :include => true
 
       attributes :plu, :id
-      has_one :readable, :polymorphic => true
+      has_one :readable, :polymorphic => true, :nested => true
     end
 
     email_class = Class.new(Model) do
@@ -1037,9 +1037,9 @@ class SerializerTest < ActiveModel::TestCase
 
       attributes :name, :url
 
-      has_one :attachable, :polymorphic => true
-      has_one :readable,   :polymorphic => true
-      has_one :edible,     :polymorphic => true
+      has_one :attachable, :polymorphic => true, :nested => true
+      has_one :readable,   :polymorphic => true, :nested => true
+      has_one :edible,     :polymorphic => true, :nested => true
     end
 
     email  = email_class.new  :id => 1, :subject => "Hello", :body => "World"

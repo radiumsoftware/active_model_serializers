@@ -230,6 +230,10 @@ module ActiveModel
           option :polymorphic
         end
 
+        def nested?
+          option :nested
+        end
+
         def polymorphic_key
           associated_object.class.to_s.demodulize.underscore.to_sym
         end
@@ -245,7 +249,7 @@ module ActiveModel
         def serialize
           object = associated_object
 
-          if object && polymorphic?
+          if object && polymorphic? && nested?
             { polymorphic_key => find_serializable(object).serializable_hash }
           elsif object
             find_serializable(object).serializable_hash
