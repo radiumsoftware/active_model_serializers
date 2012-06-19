@@ -265,7 +265,7 @@ module ActiveModel
         def serialize_ids
           object = associated_object
 
-          if object && polymorphic?
+          if object && polymorphic? && nested?
             { polymorphic_key => object.read_attribute_for_serialization(:id) }
           elsif object
             object.read_attribute_for_serialization(:id)
