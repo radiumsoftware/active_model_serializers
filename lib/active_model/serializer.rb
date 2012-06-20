@@ -235,7 +235,7 @@ module ActiveModel
         end
 
         def key
-          if polymorphic? && !nested?
+          if polymorphic? && !nested? && associated_object
             polymorphic_key
           else
             super

@@ -912,6 +912,18 @@ class SerializerTest < ActiveModel::TestCase
       :url => 'http://example.com/logo.png',
       :email => { :subject => 'foo', :body => 'bar' }
     }, actual)
+
+    email = email_class.new :subject => 'foo', :body => 'bar', :id => '1'
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => nil
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :attachable => nil
+    }, actual)
   end
 
   def test_handles_simple_polymorphic_ids
@@ -944,6 +956,18 @@ class SerializerTest < ActiveModel::TestCase
       :name => 'logo.png', 
       :url => 'http://example.com/logo.png',
       :email => 1
+    }, actual)
+
+    email = email_class.new :subject => 'foo', :body => 'bar', :id => '1'
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => nil
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :attachable => nil
     }, actual)
   end
 
