@@ -234,6 +234,14 @@ module ActiveModel
           option :nested
         end
 
+        def key
+          if polymorphic? && !nested?
+            polymorphic_key
+          else
+            super
+          end
+        end
+
         def polymorphic_key
           associated_object.class.to_s.demodulize.underscore.to_sym
         end

@@ -881,7 +881,73 @@ class SerializerTest < ActiveModel::TestCase
     end
   end
 
-  def tests_can_handle_polymorphism
+  def test_handles_simple_polymorphic_objects
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true
+    end
+
+    email = email_class.new :subject => 'foo', :body => 'bar', :id => '1'
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :email => { :subject => 'foo', :body => 'bar' }
+    }, actual)
+  end
+
+  def test_handles_simple_polymorphic_ids
+    email_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :subject, :body
+    end
+
+    email_class = Class.new(Model) do
+      def self.to_s
+        "Email"
+      end
+
+      define_method :active_model_serializer do
+        email_serializer
+      end
+    end
+
+    attachment_serializer = Class.new(ActiveModel::Serializer) do
+      attributes :name, :url
+      has_one :attachable, :polymorphic => true, :embed => :ids
+    end
+
+    email = email_class.new :id => 1
+
+    attachment = Attachment.new :name => 'logo.png', :url => 'http://example.com/logo.png', :attachable => email
+
+    actual = attachment_serializer.new(attachment, {}).as_json
+
+    assert_equal({
+      :name => 'logo.png', 
+      :url => 'http://example.com/logo.png',
+      :email => 1
+    }, actual)
+  end
+
+  def tests_can_handle_nested_polymorphism
     email_serializer = Class.new(ActiveModel::Serializer) do
       attributes :subject, :body
     end
@@ -916,7 +982,7 @@ class SerializerTest < ActiveModel::TestCase
     }, actual)
   end
 
-  def test_can_handle_polymoprhic_ids
+  def test_can_handle_nested_polymoprhic_ids
     email_serializer = Class.new(ActiveModel::Serializer) do
       attributes :subject, :body
     end
